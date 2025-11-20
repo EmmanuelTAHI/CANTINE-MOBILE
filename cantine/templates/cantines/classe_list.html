@@ -1,0 +1,64 @@
+{% extends "cantines/base.html" %}
+{% load static %}
+
+{% block title %}Classes - Gestion Cantine HEG{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-heg-violet/10 via-white to-heg-violet/10 py-12 mb-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-5xl font-heading font-bold mb-2 text-heg-gris">Classes</h1>
+                <p class="text-lg text-heg-gris/70">Gestion des classes scolaires</p>
+            </div>
+            {% if request.user.profile.role == 'admin' %}
+            <a href="{% url 'cantine:classe_create' %}" class="bg-heg-violet text-white px-6 py-3 rounded-lg hover:bg-heg-violetDark transition-colors font-semibold shadow-sm hover:shadow-md">
+                <i class="fas fa-plus-circle mr-2"></i>Ajouter une classe
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 mb-8">
+    <div class="bg-white border border-heg-gris/20 rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr class="border-b-2 border-heg-gris/20 bg-heg-grisClair">
+                        <th class="text-heg-gris/70 font-semibold">Nom</th>
+                        <th class="text-heg-gris/70 font-semibold">Niveau</th>
+                        {% if request.user.profile.role == 'admin' %}
+                        <th class="text-heg-gris/70 font-semibold">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classe in classes %}
+                    <tr class="border-b border-heg-gris/15 hover:bg-heg-grisClair">
+                        <td class="font-semibold text-heg-gris">{{ classe.nom }}</td>
+                        <td class="text-heg-gris/70">{{ classe.niveau|default:"—" }}</td>
+                        {% if request.user.profile.role == 'admin' %}
+                        <td>
+                            <div class="flex gap-2">
+                                <a href="{% url 'cantine:classe_update' classe.pk %}" class="btn btn-sm btn-ghost text-heg-gris hover:text-white hover:bg-heg-gris">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'cantine:classe_delete' classe.pk %}" class="btn btn-sm btn-ghost text-heg-gris hover:text-white hover:bg-heg-gris">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-heg-gris/60 py-12">Aucune classe trouvée</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

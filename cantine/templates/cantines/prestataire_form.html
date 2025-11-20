@@ -1,0 +1,130 @@
+{% extends "cantines/base.html" %}
+{% load static %}
+
+{% block title %}{% if object %}Modifier{% else %}Créer{% endif %} un prestataire - Gestion Cantine HEG{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-heg-violet/10 via-white to-heg-violet/10 py-12 mb-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-5xl font-heading font-bold mb-2 text-heg-gris">
+            {% if object %}Modifier le prestataire{% else %}Créer un prestataire{% endif %}
+        </h1>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 mb-8 max-w-4xl">
+    <div class="bg-white border border-heg-gris/20 rounded-lg shadow-sm p-8">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-heg-gris mb-4">Informations de connexion</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Nom d'utilisateur</span>
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.username.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Email</span>
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.email.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Prénom</span>
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.first_name.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Nom</span>
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.last_name.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 pt-6 border-t border-heg-gris/20">
+                <h3 class="text-lg font-bold text-heg-gris mb-4">Profil Cantine</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Rôle</span>
+                        </label>
+                        {{ form.role }}
+                        {% if form.role.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.role.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Organisation</span>
+                        </label>
+                        {{ form.organisation }}
+                        {% if form.organisation.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.organisation.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-heg-gris">Téléphone</span>
+                        </label>
+                        {{ form.telephone }}
+                        {% if form.telephone.errors %}
+                        <label class="label">
+                            <span class="label-text-alt text-heg-gris">{{ form.telephone.errors }}</span>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label cursor-pointer justify-start gap-4">
+                            {{ form.actif }}
+                            <span class="label-text font-semibold text-heg-gris">Compte actif</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-heg-gris/20">
+                <a href="{% url 'cantine:prestataire_list' %}" class="px-6 py-3 bg-heg-grisClair text-heg-gris rounded-lg hover:bg-heg-gris/15 transition-colors font-semibold">Annuler</a>
+                <button type="submit" class="px-6 py-3 bg-heg-violet text-white rounded-lg hover:bg-heg-violetDark transition-colors font-semibold shadow-sm hover:shadow-md">
+                    <i class="fas fa-save mr-2"></i>Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

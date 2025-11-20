@@ -1,0 +1,225 @@
+{% extends "cantines/base.html" %}
+
+{% block title %}Espace Prestataire · Gestion Cantine HEG{% endblock %}
+
+{% block content %}
+<section class="container py-10">
+    <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-4 rounded-3xl bg-white p-8 shadow-xl md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-[0.35em] text-heg-gris/60">Prestataire</p>
+                <h2 class="mt-2 text-3xl font-semibold text-heg-violet">Interface journalière</h2>
+                <p class="mt-2 max-w-xl text-sm text-heg-gris/80">Pointage rapide, accès aux élèves inscrits et publication des menus avec visuels.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="#pointage" class="btn border-none bg-heg-violet text-white hover:bg-heg-violetDark">Pointage du jour</a>
+                <a href="#planification" class="btn btn-ghost border border-heg-gris/30 text-heg-gris hover:border-heg-violet hover:text-heg-violet">Planifier un menu</a>
+            </div>
+        </div>
+
+        <article id="planification" class="card border border-heg-gris/20 bg-white shadow-lg">
+            <div class="card-body space-y-6">
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <h3 class="card-title text-heg-violet">Menu du jour</h3>
+                        <p class="text-sm text-heg-gris/70">Téléversez la photo du plat et détaillez les composantes du repas.</p>
+                    </div>
+                    <div>
+                        <h3 class="card-title text-heg-violet">Menu du mois</h3>
+                        <p class="text-sm text-heg-gris/70">Planifiez le prochain mois pour coordination avec l'administration.</p>
+                    </div>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2">
+                    <form method="post" enctype="multipart/form-data" class="space-y-4 rounded-2xl border border-heg-gris/20 bg-heg-grisClair/40 p-6 shadow-inner">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="create_menu_daily">
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Date</label>
+                            {{ menu_form.date }}
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Plat principal</label>
+                            {{ menu_form.plat_principal }}
+                        </div>
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Entrée</label>
+                                {{ menu_form.entree }}
+                            </div>
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Accompagnement</label>
+                                {{ menu_form.accompagnement }}
+                            </div>
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Dessert</label>
+                                {{ menu_form.dessert }}
+                            </div>
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Boisson</label>
+                                {{ menu_form.boisson }}
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Commentaires</label>
+                            {{ menu_form.commentaires }}
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Photo du plat</label>
+                            {{ menu_form.photo }}
+                        </div>
+                        <button type="submit" class="btn w-full bg-heg-violet text-white hover:bg-heg-violetDark">Publier le menu du jour</button>
+                    </form>
+
+                    <form method="post" enctype="multipart/form-data" class="space-y-4 rounded-2xl border border-heg-gris/20 bg-heg-grisClair/40 p-6 shadow-inner">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="create_menu_monthly">
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Titre</label>
+                            {{ monthly_form.titre }}
+                        </div>
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Mois</label>
+                                {{ monthly_form.mois }}
+                            </div>
+                            <div class="form-control">
+                                <label class="label text-sm font-medium text-heg-gris">Année</label>
+                                {{ monthly_form.annee }}
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Description</label>
+                            {{ monthly_form.description }}
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Image de couverture</label>
+                            {{ monthly_form.couverture }}
+                        </div>
+                        <div class="form-control">
+                            <label class="label text-sm font-medium text-heg-gris">Document (PDF)</label>
+                            {{ monthly_form.document }}
+                        </div>
+                        <button type="submit" class="btn w-full bg-heg-violet text-white hover:bg-heg-violetDark">Partager le menu mensuel</button>
+                    </form>
+                </div>
+            </div>
+        </article>
+
+        <article id="pointage" class="card border border-heg-gris/20 bg-white shadow-lg">
+            <div class="card-body space-y-6">
+                <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h3 class="card-title text-heg-violet">Pointage du {{ today|date:"l j F Y" }}</h3>
+                        <p class="text-sm text-heg-gris/70">Cliquez sur chaque élève pour marquer sa présence au repas.</p>
+                    </div>
+                    <span class="rounded-full bg-heg-violet/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-heg-violet">
+                        {{ today_presence_ids|length }} élèves pointés
+                    </span>
+                </div>
+                <div class="space-y-5">
+                    {% for classe, eleves in grouped_students.items %}
+                        <div class="rounded-3xl border border-heg-gris/20 bg-heg-grisClair/40 p-5">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-lg font-semibold text-heg-violet">{{ classe }}</h4>
+                                <span class="text-xs uppercase tracking-wide text-heg-gris/60">{{ eleves|length }} élèves</span>
+                            </div>
+                            <div class="mt-4 grid gap-3 md:grid-cols-2">
+                                {% for eleve in eleves %}
+                                    <form method="post" class="rounded-2xl border border-heg-gris/20 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-[1px]">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="toggle_presence">
+                                        <input type="hidden" name="student_id" value="{{ eleve.id }}">
+                                        <button type="submit" class="flex w-full items-center justify-between text-left">
+                                            <div>
+                                                <p class="font-semibold text-heg-gris">{{ eleve.prenom }} {{ eleve.nom }}</p>
+                                                <p class="text-xs text-heg-gris/60">{{ eleve.matricule }}</p>
+                                            </div>
+                                            {% if eleve.id in today_presence_ids %}
+                                                <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                                                    <i class="fas fa-check"></i>Pointé
+                                                </span>
+                                            {% else %}
+                                                <span class="rounded-full bg-heg-gris/10 px-3 py-1 text-xs font-semibold text-heg-gris/80">Pointer</span>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="rounded-2xl border border-dashed border-heg-gris/30 p-6 text-center text-sm text-heg-gris/70">
+                            Aucun élève inscrit pour le moment. L'administration doit enregistrer les élèves.
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </article>
+
+        <div class="grid gap-6 md:grid-cols-2">
+            <article class="card border border-heg-gris/20 bg-white shadow">
+                <div class="card-body space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="card-title text-heg-violet">Menus récents</h3>
+                        <span class="text-xs text-heg-gris/60">7 derniers jours</span>
+                    </div>
+                    <ul class="space-y-3 text-sm text-heg-gris">
+                        {% for menu in daily_menus %}
+                            <li class="rounded-2xl border border-heg-gris/20 bg-heg-grisClair/40 p-4">
+                                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <p class="text-sm font-semibold text-heg-violet">{{ menu.date|date:"l j F" }}</p>
+                                        <p class="text-xs text-heg-gris/70">{{ menu.plat_principal }}</p>
+                                    </div>
+                                    {% if menu.photo %}
+                                        <img src="{{ menu.photo.url }}" alt="Photo du menu" class="h-20 w-32 rounded-xl object-cover">
+                                    {% endif %}
+                                </div>
+                                {% if menu.commentaires %}
+                                    <p class="mt-2 text-xs text-heg-gris/70">{{ menu.commentaires }}</p>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="rounded-2xl border border-dashed border-heg-gris/30 p-6 text-center text-sm text-heg-gris/70">
+                                Publiez votre premier menu du jour pour le voir apparaître ici.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </article>
+            <article class="card border border-heg-gris/20 bg-white shadow">
+                <div class="card-body space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="card-title text-heg-violet">Menus mensuels partagés</h3>
+                        <span class="text-xs text-heg-gris/60">6 derniers</span>
+                    </div>
+                    <ul class="space-y-3 text-sm text-heg-gris">
+                        {% for menu in monthly_menus %}
+                            <li class="rounded-2xl border border-heg-gris/20 bg-heg-grisClair/40 p-4">
+                                <div class="flex items-center gap-3">
+                                    {% if menu.couverture %}
+                                        <img src="{{ menu.couverture.url }}" alt="Couverture" class="h-16 w-16 rounded-full object-cover ring-2 ring-heg-violet/40">
+                                    {% else %}
+                                        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-heg-violet/20 text-sm font-semibold text-heg-violet">{{ menu.get_mois_display|slice:":3" }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <p class="font-semibold text-heg-violet">{{ menu.titre }}</p>
+                                        <p class="text-xs text-heg-gris/60">{{ menu.get_mois_display }} {{ menu.annee }}</p>
+                                        {% if menu.document %}
+                                            <a href="{{ menu.document.url }}" class="text-xs font-medium text-heg-violet hover:underline">Télécharger le PDF</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="rounded-2xl border border-dashed border-heg-gris/30 p-6 text-center text-sm text-heg-gris/70">
+                                Aucun menu mensuel pour le moment.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

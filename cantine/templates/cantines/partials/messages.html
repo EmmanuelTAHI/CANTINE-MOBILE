@@ -1,0 +1,129 @@
+{% if messages %}
+<div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md w-full md:w-auto">
+    {% for message in messages %}
+        {% if message.tags == "success" %}
+            <div class="toast-message toast-success bg-green-50 border border-green-500/40 text-green-700 shadow-lg rounded-lg p-4 flex items-start gap-3 transform translate-x-full opacity-0 transition-all duration-300 ease-in-out">
+                <div class="flex-shrink-0 mt-0.5">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div class="flex-grow">
+                    <span class="font-semibold block mb-1">Succès :</span>
+                    <span>{{ message }}</span>
+                </div>
+                <button onclick="closeToast(this)" class="flex-shrink-0 text-green-600 hover:text-green-800 transition-colors" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="toast-message toast-error bg-red-50 border border-red-500/40 text-red-700 shadow-lg rounded-lg p-4 flex items-start gap-3 transform translate-x-full opacity-0 transition-all duration-300 ease-in-out">
+                <div class="flex-shrink-0 mt-0.5">
+                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                </div>
+                <div class="flex-grow">
+                    <span class="font-semibold block mb-1">Erreur :</span>
+                    <span>{{ message }}</span>
+                </div>
+                <button onclick="closeToast(this)" class="flex-shrink-0 text-red-600 hover:text-red-800 transition-colors" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% elif message.tags == "warning" %}
+            <div class="toast-message toast-warning bg-amber-50 border border-amber-500/40 text-amber-700 shadow-lg rounded-lg p-4 flex items-start gap-3 transform translate-x-full opacity-0 transition-all duration-300 ease-in-out">
+                <div class="flex-shrink-0 mt-0.5">
+                    <i class="fas fa-exclamation-triangle text-amber-600 text-xl"></i>
+                </div>
+                <div class="flex-grow">
+                    <span class="font-semibold block mb-1">Attention :</span>
+                    <span>{{ message }}</span>
+                </div>
+                <button onclick="closeToast(this)" class="flex-shrink-0 text-amber-600 hover:text-amber-800 transition-colors" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% else %}
+            <div class="toast-message toast-info bg-white border border-heg-gris/30 text-heg-gris shadow-lg rounded-lg p-4 flex items-start gap-3 transform translate-x-full opacity-0 transition-all duration-300 ease-in-out">
+                <div class="flex-shrink-0 mt-0.5">
+                    <i class="fas fa-info-circle text-heg-gris text-xl"></i>
+                </div>
+                <div class="flex-grow">
+                    <span>{{ message }}</span>
+                </div>
+                <button onclick="closeToast(this)" class="flex-shrink-0 text-heg-gris hover:text-heg-violet transition-colors" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toastMessages = document.querySelectorAll('.toast-message');
+        const AUTO_CLOSE_DELAY = 5000; // 5 secondes
+        
+        // Fonction pour afficher un toast
+        function showToast(toast) {
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+                toast.classList.add('translate-x-0', 'opacity-100');
+            }, 100);
+        }
+        
+        // Fonction pour fermer un toast
+        function closeToastElement(toast) {
+            toast.classList.remove('translate-x-0', 'opacity-100');
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                toast.remove();
+                // Si plus de toasts, supprimer le conteneur
+                const container = document.getElementById('toast-container');
+                if (container && container.children.length === 0) {
+                    container.remove();
+                }
+            }, 300);
+        }
+        
+        // Fonction globale pour fermer depuis le bouton
+        window.closeToast = function(button) {
+            const toast = button.closest('.toast-message');
+            if (toast.autoCloseTimer) {
+                clearTimeout(toast.autoCloseTimer);
+            }
+            closeToastElement(toast);
+        };
+        
+        // Afficher chaque toast avec un délai progressif
+        toastMessages.forEach((toast, index) => {
+            setTimeout(() => {
+                showToast(toast);
+            }, index * 100);
+            
+            // Fonction pour démarrer la fermeture automatique
+            function startAutoClose() {
+                if (toast.autoCloseTimer) {
+                    clearTimeout(toast.autoCloseTimer);
+                }
+                toast.autoCloseTimer = setTimeout(() => {
+                    closeToastElement(toast);
+                }, AUTO_CLOSE_DELAY);
+            }
+            
+            // Démarrer la fermeture automatique initiale
+            startAutoClose();
+            
+            // Annuler la fermeture automatique si on survole
+            toast.addEventListener('mouseenter', () => {
+                if (toast.autoCloseTimer) {
+                    clearTimeout(toast.autoCloseTimer);
+                }
+            });
+            
+            // Relancer la fermeture automatique quand on quitte
+            toast.addEventListener('mouseleave', () => {
+                startAutoClose();
+            });
+        });
+    });
+</script>
+{% endif %}
+

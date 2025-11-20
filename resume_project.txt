@@ -1,0 +1,67 @@
+🧾 1️ Reformulation propre et complète de ce que la prestataire à expliquer
+🔹 Fonctionnement actuel
+1.	Le service de la cantine est géré par une prestataire externe, en collaboration avec l’administration / comptabilité de l’école.
+2.	Les parents paient pour le service de cantine à l’école.
+3.	La facturation se fait :
+o	En fonction du nombre de plats servis ;
+4.	Chaque début de mois, un menu mensuel est préparé et transmis à l’école.
+
+🔹 Besoins exprimés pour la solution digitale
+La prestataire souhaite une solution numérique intégrée qui lui permette de :
+1.	Avoir un système interne de gestion
+2.	Disposer d’une mise à jour automatique du nombre d’enfants inscrits à la cantine (synchronisation avec la base de l’école).
+3.	Une application mobile simple d’utilisation pour :
+o	Voir la liste des élèves inscrits à la cantine ;
+o	Cocher les élèves qui ont mangé chaque jour ;
+o	Générer ou visualiser les rapports journaliers ou mensuels.
+4.	Un système de gestion des menus (création, consultation, modification, affichage).
+5.	Une application web pour l’administration permettant :
+o	D’ajouter, modifier ou supprimer les élèves ;
+o	De consulter les paiements et soldes ;
+o	D’envoyer automatiquement la liste des inscrits à la prestataire ;
+o	De suivre les statistiques globales.
+________________________________________
+💻 2️ Liste complète des fonctionnalités à développer
+________________________________________
+🌐 A. Application Web (Administration - École)
+👥 Gestion des élèves
+1.	Ajouter un élève au service de cantine.
+2.	Modifier ou supprimer les informations d’un élève.
+3.	Consulter la liste des élèves inscrits.
+4.	Rechercher un élève.
+5.	Gérer les abonnements à la cantine.
+📦 Gestion administrative
+9.	Synchroniser les données avec le service de la prestataire.
+10.	Envoyer la liste des élèves inscrits à la prestataire (automatiquement).
+11.	Consulter les statistiques de fréquentation (combien d’élèves ont mangé chaque jour).
+📅 Gestion des menus
+12.	Créer et planifier les menus mensuels.
+13.	Modifier ou supprimer un menu.
+📊 Rapports et tableaux de bord
+15.	Visualiser les rapports globaux :
+•	Nombre total d’élèves inscrits ;
+•	Nombre de repas servis ;
+________________________________________
+📱 B. Application Mobile (Prestataire de cantine)
+👤 Gestion quotidienne
+1.	Se connecter à son compte (authentification sécurisée).
+2.	Voir la liste des élèves inscrits à la cantine.
+3.	Filtrer par classe, niveau ou statut (inscrit / non inscrit).
+4.	Cocher les élèves ayant pris le repas du jour.
+🍽️ Gestion des repas
+6.	Consulter le menu mensuel.
+💰 Gestion des dépenses
+13.	Ajouter une dépense (ex. achat de riz, gaz, huile…).
+14.	Voir le total des dépenses mensuelles.
+15.	Générer un mini rapport financier.
+📈 Rapports et synchronisation
+16.	Synchroniser les données avec l’application web.
+17.	Générer un rapport journalier (nombre de repas servis, etc.).
+18.	Consulter l’historique des repas servis.
+________________________________________
+🧩 3️ Idée d’architecture simple
+Élément	Description
+Frontend Web (Admin)	HTML-CSS / Tailwind-DaisyUI 
+Mobile (Prestataire)	Flutter
+Backend API	Django REST / FastAPI
+Base de données	PostgreSQL / MySQL
