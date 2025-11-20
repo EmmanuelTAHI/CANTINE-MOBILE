@@ -37,7 +37,7 @@ class StudentCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: HEGColors.violet.withOpacity(0.1),
+                  color: HEGColors.violet.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: student.photo != null
@@ -76,7 +76,7 @@ class StudentCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: HEGColors.violet.withOpacity(0.1),
+                              color: HEGColors.violet.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -115,7 +115,7 @@ class StudentCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: HEGColors.success.withOpacity(0.1),
+                    color: HEGColors.success.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -132,9 +132,16 @@ class StudentCard extends StatelessWidget {
   }
 
   Widget _buildInitials() {
-    final initials = student.prenom.isNotEmpty && student.nom.isNotEmpty
-        ? '${student.prenom[0]}${student.nom[0]}'.toUpperCase()
-        : student.matricule.substring(0, 2).toUpperCase();
+    String initials;
+    if (student.prenom.isNotEmpty && student.nom.isNotEmpty) {
+      initials = '${student.prenom[0]}${student.nom[0]}'.toUpperCase();
+    } else if (student.matricule.isNotEmpty) {
+      initials = student.matricule.length >= 2
+          ? student.matricule.substring(0, 2).toUpperCase()
+          : student.matricule.substring(0, 1).toUpperCase();
+    } else {
+      initials = '??';
+    }
 
     return Center(
       child: Text(

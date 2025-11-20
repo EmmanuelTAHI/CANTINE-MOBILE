@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Espace Cantine',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           letterSpacing: 3,
-                          color: HEGColors.gris.withOpacity(0.7),
+                          color: HEGColors.gris.withValues(alpha: 0.7),
                         ),
                     textAlign: TextAlign.center,
                   ),

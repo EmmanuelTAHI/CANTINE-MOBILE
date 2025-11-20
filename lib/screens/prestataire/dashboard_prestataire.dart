@@ -93,7 +93,7 @@ class _DashboardPrestataireScreenState
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: HEGColors.gris.withOpacity(0.3),
+                color: HEGColors.gris.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -110,7 +110,7 @@ class _DashboardPrestataireScreenState
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: HEGColors.violet.withOpacity(0.1),
+                    color: HEGColors.violet.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: HEGColors.violet,
@@ -167,7 +167,7 @@ class _DashboardPrestataireScreenState
             Text(
               user?.email ?? '',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: HEGColors.gris.withOpacity(0.7),
+                    color: HEGColors.gris.withValues(alpha: 0.7),
                   ),
             ),
             const SizedBox(height: 24),
@@ -190,7 +190,7 @@ class _DashboardPrestataireScreenState
                 context.push(AppRoutes.settings);
               },
             ),
-            Divider(color: HEGColors.gris.withOpacity(0.2)),
+            Divider(color: HEGColors.gris.withValues(alpha: 0.2)),
             _buildMenuOption(
               context,
               icon: Icons.logout,
@@ -237,7 +237,7 @@ class _DashboardPrestataireScreenState
             const Spacer(),
             Icon(
               Icons.chevron_right,
-              color: HEGColors.gris.withOpacity(0.5),
+              color: HEGColors.gris.withValues(alpha: 0.5),
             ),
           ],
         ),
@@ -297,10 +297,10 @@ class _DashboardPrestataireScreenState
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: HEGColors.white.withOpacity(0.2),
+                          color: HEGColors.white.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: HEGColors.white.withOpacity(0.3),
+                            color: HEGColors.white.withValues(alpha: 0.3),
                             width: 2,
                           ),
                         ),
@@ -359,13 +359,13 @@ class _DashboardPrestataireScreenState
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                HEGColors.violet.withOpacity(0.1),
-                HEGColors.violetDark.withOpacity(0.05),
+                HEGColors.violet.withValues(alpha: 0.1),
+                HEGColors.violetDark.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: HEGColors.violet.withOpacity(0.2),
+              color: HEGColors.violet.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -386,7 +386,7 @@ class _DashboardPrestataireScreenState
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: HEGColors.violet.withOpacity(0.3),
+                      color: HEGColors.violet.withValues(alpha: 0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -411,7 +411,7 @@ class _DashboardPrestataireScreenState
                     Text(
                       'Bonjour,',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: HEGColors.gris.withOpacity(0.7),
+                            color: HEGColors.gris.withValues(alpha: 0.7),
                           ),
                     ),
                     const SizedBox(height: 4),
@@ -480,7 +480,7 @@ class _DashboardPrestataireScreenState
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -492,7 +492,7 @@ class _DashboardPrestataireScreenState
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 28),
@@ -509,7 +509,7 @@ class _DashboardPrestataireScreenState
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: HEGColors.gris.withOpacity(0.7),
+                  color: HEGColors.gris.withValues(alpha: 0.7),
                 ),
           ),
         ],
@@ -525,7 +525,7 @@ class _DashboardPrestataireScreenState
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -539,7 +539,7 @@ class _DashboardPrestataireScreenState
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: HEGColors.violet.withOpacity(0.1),
+                  color: HEGColors.violet.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -677,7 +677,7 @@ class _DashboardPrestataireScreenState
                 Icon(
                   Icons.people_outline_rounded,
                   size: 64,
-                  color: HEGColors.gris.withOpacity(0.3),
+                  color: HEGColors.gris.withValues(alpha: 0.3),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -695,7 +695,7 @@ class _DashboardPrestataireScreenState
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -714,7 +714,7 @@ class _DashboardPrestataireScreenState
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: HEGColors.violet.withOpacity(0.1),
+                            color: HEGColors.violet.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(
@@ -746,7 +746,7 @@ class _DashboardPrestataireScreenState
                   ],
                 ),
               ),
-              Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+              Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
               ...students.map((student) => _buildStudentTile(student)),
             ],
           ),
@@ -772,8 +772,8 @@ class _DashboardPrestataireScreenState
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    HEGColors.violet.withOpacity(0.2),
-                    HEGColors.violetDark.withOpacity(0.1),
+                    HEGColors.violet.withValues(alpha: 0.2),
+                    HEGColors.violetDark.withValues(alpha: 0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
@@ -810,7 +810,7 @@ class _DashboardPrestataireScreenState
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: HEGColors.violet.withOpacity(0.1),
+                            color: HEGColors.violet.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -830,7 +830,7 @@ class _DashboardPrestataireScreenState
                       Text(
                         student.matricule,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: HEGColors.gris.withOpacity(0.7),
+                              color: HEGColors.gris.withValues(alpha: 0.7),
                               fontSize: 12,
                             ),
                       ),
@@ -841,7 +841,7 @@ class _DashboardPrestataireScreenState
             ),
             Icon(
               Icons.chevron_right,
-              color: HEGColors.gris.withOpacity(0.3),
+              color: HEGColors.gris.withValues(alpha: 0.3),
             ),
           ],
         ),

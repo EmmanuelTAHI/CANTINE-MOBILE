@@ -29,12 +29,11 @@ class HEGTheme {
         primaryContainer: HEGColors.violetDark,
         secondary: HEGColors.gris,
         surface: HEGColors.white,
-        background: HEGColors.grisClair,
+        surfaceContainerHighest: HEGColors.grisClair,
         error: HEGColors.error,
         onPrimary: HEGColors.white,
         onSecondary: HEGColors.white,
         onSurface: HEGColors.gris,
-        onBackground: HEGColors.gris,
         onError: HEGColors.white,
       ),
       scaffoldBackgroundColor: HEGColors.grisClair,
@@ -77,7 +76,7 @@ class HEGTheme {
         bodySmall: GoogleFonts.inter(
           fontSize: 12,
           fontWeight: FontWeight.normal,
-          color: HEGColors.gris.withOpacity(0.7),
+          color: HEGColors.gris.withValues(alpha: 0.7),
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -133,11 +132,11 @@ class HEGTheme {
         fillColor: HEGColors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: HEGColors.gris.withOpacity(0.3)),
+          borderSide: BorderSide(color: HEGColors.gris.withValues(alpha: 0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: HEGColors.gris.withOpacity(0.3)),
+          borderSide: BorderSide(color: HEGColors.gris.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -152,7 +151,7 @@ class HEGTheme {
           fontSize: 14,
         ),
         hintStyle: GoogleFonts.inter(
-          color: HEGColors.gris.withOpacity(0.5),
+          color: HEGColors.gris.withValues(alpha: 0.5),
           fontSize: 14,
         ),
       ),

@@ -160,7 +160,7 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
                           Icon(
                             Icons.restaurant_menu_outlined,
                             size: 64,
-                            color: HEGColors.gris.withOpacity(0.3),
+                            color: HEGColors.gris.withValues(alpha: 0.3),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -171,7 +171,7 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
                           Text(
                             'Aucun menu n\'a été prévu pour cette date',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: HEGColors.gris.withOpacity(0.7),
+                                  color: HEGColors.gris.withValues(alpha: 0.7),
                                 ),
                             textAlign: TextAlign.center,
                           ),
@@ -203,7 +203,7 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -243,13 +243,13 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
                 Row(
                   children: [
                     Icon(Icons.calendar_today,
-                        size: 18, color: HEGColors.gris.withOpacity(0.7)),
+                        size: 18, color: HEGColors.gris.withValues(alpha: 0.7)),
                     const SizedBox(width: 8),
                     Text(
                       DateFormat('EEEE dd MMMM yyyy', 'fr_FR')
                           .format(menu.date),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: HEGColors.gris.withOpacity(0.7),
+                            color: HEGColors.gris.withValues(alpha: 0.7),
                           ),
                     ),
                   ],
@@ -313,13 +313,13 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
                 if (menu.commentaires != null &&
                     menu.commentaires!.isNotEmpty) ...[
                   const SizedBox(height: 20),
-                  Divider(color: HEGColors.gris.withOpacity(0.1)),
+                  Divider(color: HEGColors.gris.withValues(alpha: 0.1)),
                   const SizedBox(height: 16),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.note,
-                          size: 20, color: HEGColors.gris.withOpacity(0.7)),
+                          size: 20, color: HEGColors.gris.withValues(alpha: 0.7)),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -349,10 +349,10 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: isMain
-            ? Border.all(color: color.withOpacity(0.3), width: 2)
+            ? Border.all(color: color.withValues(alpha: 0.3), width: 2)
             : null,
       ),
       child: Row(
@@ -361,7 +361,7 @@ class _MenuTodayScreenState extends State<MenuTodayScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 24),

@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from .models import Eleve, PresenceRepas
+from .models import MenuJournalier, MenuMensuel
 
 User = get_user_model()
 
@@ -105,3 +106,36 @@ class AttendanceSerializer(serializers.ModelSerializer):
         if hasattr(instance, 'updated_at'):
             representation['updated_at'] = instance.updated_at.isoformat() if instance.updated_at else None
         return representation
+
+
+class MenuJournalierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuJournalier
+        fields = [
+            'id',
+            'date',
+            'entree',
+            'plat_principal',
+            'accompagnement',
+            'dessert',
+            'boisson',
+            'commentaires',
+            'photo',
+        ]
+        read_only_fields = ['id', 'photo']
+
+
+class MenuMensuelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuMensuel
+        fields = [
+            'id',
+            'titre',
+            'mois',
+            'annee',
+            'description',
+            'couverture',
+            'document',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'couverture', 'document', 'created_at']

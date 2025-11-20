@@ -50,11 +50,11 @@ class CustomTextField extends StatelessWidget {
         labelText: label,
         hintText: hint,
         prefixIcon: prefixIcon != null
-            ? Icon(prefixIcon, color: HEGColors.gris.withOpacity(0.6))
+            ? Icon(prefixIcon, color: HEGColors.gris.withValues(alpha: 0.6))
             : null,
         suffixIcon: suffixIcon != null
             ? IconButton(
-                icon: Icon(suffixIcon, color: HEGColors.gris.withOpacity(0.6)),
+                icon: Icon(suffixIcon, color: HEGColors.gris.withValues(alpha: 0.6)),
                 onPressed: onSuffixTap,
               )
             : null,

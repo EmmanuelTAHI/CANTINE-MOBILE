@@ -9,6 +9,8 @@ from datetime import date
 
 from .models import Eleve, PresenceRepas
 from .serializers import StudentSerializer, AttendanceSerializer, CustomTokenObtainPairSerializer
+from .models import MenuJournalier, MenuMensuel
+from .serializers import MenuJournalierSerializer, MenuMensuelSerializer
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -89,6 +91,37 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         
         # Créer une nouvelle présence
         return super().create(request, *args, **kwargs)
+
+
+class MenuJournalierViewSet(viewsets.ModelViewSet):
+    """API pour les menus journaliers"""
+    queryset = MenuJournalier.objects.all()
+    serializer_class = MenuJournalierSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        date = self.request.query_params.get('date')
+        if date:
+            qs = qs.filter(date=date)
+        return qs.order_by('-date')
+
+
+class MenuMensuelViewSet(viewsets.ModelViewSet):
+    """API pour les menus mensuels"""
+    queryset = MenuMensuel.objects.all()
+    serializer_class = MenuMensuelSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        annee = self.request.query_params.get('annee')
+        mois = self.request.query_params.get('mois')
+        if annee:
+            qs = qs.filter(annee=annee)
+        if mois:
+            qs = qs.filter(mois=mois)
+        return qs.order_by('-annee', '-mois')
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

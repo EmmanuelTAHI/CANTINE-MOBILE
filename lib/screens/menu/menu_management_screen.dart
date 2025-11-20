@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme.dart';
+import 'package:provider/provider.dart';
 import '../../models/menu.dart';
+import '../../providers/menu_provider.dart';
 import '../../widgets/main_navigation_bar.dart';
 import '../../routes/app_routes.dart';
 
@@ -30,7 +32,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
   @override
   void initState() {
     super.initState();
-    _loadMenus();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadMenus());
   }
 
   @override
@@ -46,11 +48,35 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
   }
 
   Future<void> _loadMenus() async {
-    // TODO: Implémenter le chargement des menus depuis l'API
-    setState(() {
-      // Exemple de données
-      _menus = [];
-    });
+    final provider = Provider.of<MenuProvider>(context, listen: false);
+    try {
+      await provider.loadMenuByDate(_selectedDate);
+      final mj = provider.todayMenu;
+      setState(() {
+        if (mj != null) {
+          _menus = [
+            Menu(
+              id: mj.id,
+              date: mj.date,
+              titre: 'Menu du ${DateFormat('dd/MM/yyyy').format(mj.date)}',
+              description: mj.commentaires ?? '',
+              platPrincipal: mj.platPrincipal,
+              entree: mj.entree,
+              dessert: mj.dessert,
+              accompagnement: mj.accompagnement,
+              disponible: true,
+              prix: null,
+            )
+          ];
+        } else {
+          _menus = [];
+        }
+      });
+    } catch (_) {
+      setState(() {
+        _menus = [];
+      });
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -120,7 +146,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: HEGColors.gris.withOpacity(0.3),
+                color: HEGColors.gris.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -241,7 +267,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              side: BorderSide(color: HEGColors.gris.withOpacity(0.3)),
+                              side: BorderSide(color: HEGColors.gris.withValues(alpha: 0.3)),
                             ),
                             child: const Text('Annuler'),
                           ),
@@ -315,17 +341,17 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
           decoration: InputDecoration(
             hintText: hint,
             suffixIcon: suffixIcon != null
-                ? Icon(suffixIcon, color: HEGColors.gris.withOpacity(0.5))
+                ? Icon(suffixIcon, color: HEGColors.gris.withValues(alpha: 0.5))
                 : null,
             filled: true,
             fillColor: enabled ? HEGColors.white : HEGColors.grisClair,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: HEGColors.gris.withOpacity(0.3)),
+              borderSide: BorderSide(color: HEGColors.gris.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: HEGColors.gris.withOpacity(0.3)),
+              borderSide: BorderSide(color: HEGColors.gris.withValues(alpha: 0.3)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -338,45 +364,208 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
   }
 
   void _saveMenu(Menu? menu) {
-    // TODO: Implémenter la sauvegarde via l'API
     if (_platPrincipalController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Le plat principal est requis'),
           backgroundColor: HEGColors.error,
+          duration: Duration(seconds: 3),
         ),
       );
       return;
     }
 
-    // TODO: Créer le menu et appeler l'API pour sauvegarder
-    // final newMenu = Menu(
-    //   id: menu?.id ?? 0,
-    //   date: _selectedDate,
-    //   titre: _titreController.text.isEmpty
-    //       ? 'Menu du ${DateFormat('dd/MM/yyyy').format(_selectedDate)}'
-    //       : _titreController.text,
-    //   description: _descriptionController.text,
-    //   platPrincipal: _platPrincipalController.text,
-    //   entree: _entreeController.text.isEmpty ? null : _entreeController.text,
-    //   dessert: _dessertController.text.isEmpty ? null : _dessertController.text,
-    //   accompagnement: _accompagnementController.text.isEmpty
-    //       ? null
-    //       : _accompagnementController.text,
-    //   disponible: _disponible,
-    //   prix: _prixController.text.isEmpty
-    //       ? null
-    //       : double.tryParse(_prixController.text),
-    // );
-    // TODO: Appeler l'API pour sauvegarder le menu
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(menu != null ? 'Menu modifié' : 'Menu créé'),
-        backgroundColor: HEGColors.success,
-      ),
+    final provider = Provider.of<MenuProvider>(context, listen: false);
+
+    final payload = {
+      'date': _selectedDate.toIso8601String().split('T')[0],
+      'entree': _entreeController.text,
+      'plat_principal': _platPrincipalController.text,
+      'accompagnement': _accompagnementController.text,
+      'dessert': _dessertController.text,
+      'boisson': '',
+      'commentaires': _descriptionController.text,
+    };
+    try {
+      // ignore: avoid_print
+      print('[MenuManagementScreen] saveMenu payload: $payload');
+    } catch (_) {}
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Enregistrement du menu...'),
+              ],
+            ),
+          ),
+        );
+      },
     );
 
-    _loadMenus();
+    // Try create first, fallback to update if duplicate date error
+    provider.createJournalierMenu(payload)
+        .then((created) {
+          if (!mounted) return;
+          
+          try {
+            // ignore: avoid_print
+            print('[MenuManagementScreen] Menu créé avec succès: id=${created?.id}');
+          } catch (_) {}
+          
+          // Close loading dialog
+          Navigator.of(context, rootNavigator: true).pop();
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Menu créé avec succès!'),
+              backgroundColor: HEGColors.success,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          
+          _loadMenus();
+          
+          // Close the form after a short delay to ensure UI updates
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted && context.mounted) {
+              Navigator.of(context, rootNavigator: false).maybePop();
+            }
+          });
+        })
+        .catchError((err) {
+          if (!mounted) {
+            return null;
+          }
+          
+          // Check if error is due to duplicate date
+          final errStr = err.toString();
+          if (errStr.contains('existe déjà') || 
+              errStr.contains('duplicate') || 
+              errStr.contains('unique') ||
+              errStr.contains('Un menu existe')) {
+            try {
+              // ignore: avoid_print
+              print('[MenuManagementScreen] Duplicate date detected, attempting update...');
+            } catch (_) {}
+            
+            // Close loading dialog first
+            Navigator.of(context, rootNavigator: true).pop();
+            
+            // Load the existing menu first, then update it
+            provider.loadMenuByDate(_selectedDate).then((_) {
+              // If menu exists, get its ID and update
+              if (provider.todayMenu != null) {
+                final existingId = provider.todayMenu!.id;
+                
+                // Show loading again for update
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16),
+                            Text('Mise à jour du menu...'),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+                
+                return provider.updateJournalierMenu(existingId, payload)
+                    .then((updated) {
+                      if (!mounted) return;
+                      
+                      try {
+                        // ignore: avoid_print
+                        print('[MenuManagementScreen] Menu mis à jour avec succès: id=${updated?.id}');
+                      } catch (_) {}
+                      
+                      // Close loading dialog
+                      Navigator.of(context, rootNavigator: true).pop();
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Menu mis à jour avec succès!'),
+                          backgroundColor: HEGColors.success,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      
+                      _loadMenus();
+                      
+                      // Close the form after a short delay
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        if (mounted && context.mounted) {
+                          Navigator.of(context, rootNavigator: false).maybePop();
+                        }
+                      });
+                    })
+                    .catchError((updateErr) {
+                      if (!mounted) return;
+                      
+                      try {
+                        // ignore: avoid_print
+                        print('[MenuManagementScreen] Erreur mise à jour menu: $updateErr');
+                      } catch (_) {}
+                      
+                      // Close loading dialog
+                      Navigator.of(context, rootNavigator: true).pop();
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Erreur lors de la mise à jour: $updateErr'),
+                          backgroundColor: HEGColors.error,
+                          duration: const Duration(seconds: 4),
+                        ),
+                      );
+                    });
+              } else {
+                // Can't find menu to update, show error
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Un menu existe déjà pour cette date. Veuillez choisir une autre date.'),
+                    backgroundColor: HEGColors.error,
+                    duration: const Duration(seconds: 4),
+                  ),
+                );
+              }
+            });
+          } else {
+            // Show error for non-duplicate errors
+            try {
+              // ignore: avoid_print
+              print('[MenuManagementScreen] Erreur sauvegarde menu: $err');
+            } catch (_) {}
+            
+            // Close loading dialog
+            Navigator.of(context, rootNavigator: true).pop();
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Erreur: $err'),
+                backgroundColor: HEGColors.error,
+                duration: const Duration(seconds: 4),
+              ),
+            );
+          }
+        });
   }
 
   @override
@@ -449,7 +638,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
           Icon(
             Icons.restaurant_menu_outlined,
             size: 80,
-            color: HEGColors.gris.withOpacity(0.3),
+            color: HEGColors.gris.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 24),
           Text(
@@ -462,7 +651,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
           Text(
             'Créez votre premier menu pour commencer',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: HEGColors.gris.withOpacity(0.7),
+                  color: HEGColors.gris.withValues(alpha: 0.7),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -489,7 +678,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -521,7 +710,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                         Text(
                           DateFormat('dd MMMM yyyy', 'fr_FR').format(menu.date),
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: HEGColors.gris.withOpacity(0.7),
+                                color: HEGColors.gris.withValues(alpha: 0.7),
                               ),
                         ),
                       ],
@@ -531,8 +720,8 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: menu.disponible
-                          ? HEGColors.success.withOpacity(0.1)
-                          : HEGColors.gris.withOpacity(0.1),
+                          ? HEGColors.success.withValues(alpha: 0.1)
+                          : HEGColors.gris.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -555,7 +744,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                 ),
               ],
               const SizedBox(height: 16),
-              Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+              Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -584,7 +773,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.set_meal, color: HEGColors.gris.withOpacity(0.6), size: 18),
+                    Icon(Icons.set_meal, color: HEGColors.gris.withValues(alpha: 0.6), size: 18),
                     const SizedBox(width: 8),
                     Text(
                       'Entrée: ${menu.entree}',
@@ -597,7 +786,7 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.cake, color: HEGColors.gris.withOpacity(0.6), size: 18),
+                    Icon(Icons.cake, color: HEGColors.gris.withValues(alpha: 0.6), size: 18),
                     const SizedBox(width: 8),
                     Text(
                       'Dessert: ${menu.dessert}',

@@ -43,6 +43,8 @@ app_name = "cantine"
 api_router = DefaultRouter()
 api_router.register(r'students', api_views.StudentViewSet, basename='student')
 api_router.register(r'attendance', api_views.AttendanceViewSet, basename='attendance')
+api_router.register(r'menus/journaliers', api_views.MenuJournalierViewSet, basename='menu_journalier')
+api_router.register(r'menus/mensuels', api_views.MenuMensuelViewSet, basename='menu_mensuel')
 
 urlpatterns = [
     path("login/", CustomLoginView.as_view(), name="login"),

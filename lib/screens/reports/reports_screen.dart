@@ -17,7 +17,7 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
   DateTime _selectedMonth = DateTime.now();
   RepasType _selectedRepas = RepasType.dejeuner;
 
@@ -175,7 +175,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -189,7 +189,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: HEGColors.violet.withOpacity(0.1),
+                      color: HEGColors.violet.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(Icons.today, color: HEGColors.violet),
@@ -208,7 +208,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         Text(
                           DateFormat('dd MMMM yyyy', 'fr_FR').format(_selectedDate),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: HEGColors.gris.withOpacity(0.7),
+                                color: HEGColors.gris.withValues(alpha: 0.7),
                               ),
                         ),
                       ],
@@ -312,7 +312,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -326,7 +326,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: HEGColors.violet.withOpacity(0.1),
+                      color: HEGColors.violet.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(Icons.calendar_month, color: HEGColors.violet),
@@ -345,7 +345,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         Text(
                           DateFormat('MMMM yyyy', 'fr_FR').format(_selectedMonth),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: HEGColors.gris.withOpacity(0.7),
+                                color: HEGColors.gris.withValues(alpha: 0.7),
                               ),
                         ),
                       ],
@@ -405,10 +405,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
       width: fullWidth ? double.infinity : null,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -417,7 +417,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 24),
@@ -430,7 +430,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
                 const SizedBox(height: 4),

@@ -80,6 +80,46 @@ class MenuProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  /// Crée un menu journalier via l'API et recharge le menu de la date
+  Future<MenuJournalier?> createJournalierMenu(Map<String, dynamic> payload) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final created = await _apiService.createMenuJournalier(payload);
+      // Refresh the menu for the same date
+      await loadMenuByDate(created.date);
+      _isLoading = false;
+      notifyListeners();
+      return created;
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// Met à jour un menu journalier via l'API et recharge le menu de la date
+  Future<MenuJournalier?> updateJournalierMenu(int id, Map<String, dynamic> payload) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final updated = await _apiService.updateMenuJournalier(id, payload);
+      // Refresh the menu for the same date
+      await loadMenuByDate(updated.date);
+      _isLoading = false;
+      notifyListeners();
+      return updated;
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
 }
 
 

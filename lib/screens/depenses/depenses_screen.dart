@@ -253,13 +253,13 @@ class _DepensesScreenState extends State<DepensesScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                HEGColors.violet.withOpacity(0.1),
-                HEGColors.violetDark.withOpacity(0.05),
+                HEGColors.violet.withValues(alpha: 0.1),
+                HEGColors.violetDark.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: HEGColors.violet.withOpacity(0.2),
+              color: HEGColors.violet.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -358,7 +358,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: HEGColors.gris.withOpacity(0.7),
+                  color: HEGColors.gris.withValues(alpha: 0.7),
                 ),
           ),
         ],
@@ -407,7 +407,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
                 Icon(
                   Icons.receipt_long_outlined,
                   size: 64,
-                  color: HEGColors.gris.withOpacity(0.3),
+                  color: HEGColors.gris.withValues(alpha: 0.3),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -418,7 +418,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
                 Text(
                   'Ajoutez votre première dépense',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -469,7 +469,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -480,7 +480,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: HEGColors.violet.withOpacity(0.1),
+            color: HEGColors.violet.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -504,7 +504,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: HEGColors.violet.withOpacity(0.1),
+                    color: HEGColors.violet.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -520,7 +520,7 @@ class _DepensesScreenState extends State<DepensesScreen> {
                 Text(
                   DateFormat('dd/MM/yyyy').format(depense.date),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
               ],

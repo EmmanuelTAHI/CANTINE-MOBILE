@@ -51,7 +51,7 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
         Provider.of<AttendanceProvider>(context, listen: false);
 
     await studentProvider.loadStudents();
-    await attendanceProvider.loadTodayAttendance();
+    await attendanceProvider.loadTodayAttendance(repas: _selectedRepas);
     
     // Réinitialiser les cases cochées
     _checkedStudents.clear();
@@ -120,16 +120,24 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
       
       // Recharger les données pour synchroniser
       if (success) {
-        await attendanceProvider.loadTodayAttendance();
-        // Mettre à jour l'état local après le rechargement
+        // Keep optimistic UI state (already set above). Refresh in background
+        // but do not overwrite the optimistic state if the server response
+        // doesn't return any records (avoid UI flicker).
+        if (mounted) setState(() {});
+
+        await attendanceProvider.loadTodayAttendance(repas: _selectedRepas);
         final todayAttendance = attendanceProvider.getTodayAttendanceByRepas(_selectedRepas);
-        _checkedStudents.clear();
-        for (var att in todayAttendance) {
-          if (att.present) {
-            final attKey = '${att.studentId}_${att.repas.apiValue}';
-            _checkedStudents[attKey] = true;
+        if (todayAttendance.isNotEmpty) {
+          // Replace local mapping only if server returned records
+          _checkedStudents.clear();
+          for (var att in todayAttendance) {
+            if (att.present) {
+              final attKey = '${att.studentId}_${att.repas.apiValue}';
+              _checkedStudents[attKey] = true;
+            }
           }
-        }
+          if (mounted) setState(() {});
+        } // else keep optimistic state
       }
     } catch (e) {
       success = false;
@@ -143,7 +151,7 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur: ${attendanceProvider.error ?? "Impossible d\'enregistrer"}'),
+            content: Text('Erreur: ${attendanceProvider.error ?? "Impossible d'enregistrer"}'),
             backgroundColor: HEGColors.error,
             duration: const Duration(seconds: 3),
           ),
@@ -208,7 +216,7 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
           // Barre de sélection du repas
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: HEGColors.violet.withOpacity(0.1),
+            color: HEGColors.violet.withValues(alpha: 0.1),
             child: Row(
               children: [
                 const Icon(Icons.restaurant_menu, color: HEGColors.violet),
@@ -317,7 +325,7 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
                         Icon(
                           Icons.people_outline,
                           size: 64,
-                          color: HEGColors.gris.withOpacity(0.5),
+                          color: HEGColors.gris.withValues(alpha: 0.5),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -344,7 +352,7 @@ class _StudentsChecklistScreenState extends State<StudentsChecklistScreen> {
                         horizontal: 16,
                         vertical: 12,
                       ),
-                      color: HEGColors.violet.withOpacity(0.1),
+                      color: HEGColors.violet.withValues(alpha: 0.1),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

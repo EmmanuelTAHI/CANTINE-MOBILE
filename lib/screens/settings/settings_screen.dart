@@ -304,7 +304,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -339,7 +339,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -358,7 +358,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
             ),
           ),
-          Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+          Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
           ...children,
         ],
       ),
@@ -380,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: HEGColors.violet.withOpacity(0.1),
+              color: HEGColors.violet.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: HEGColors.violet, size: 24),
@@ -400,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -432,7 +432,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: (textColor ?? HEGColors.violet).withOpacity(0.1),
+                color: (textColor ?? HEGColors.violet).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: textColor ?? HEGColors.violet, size: 24),
@@ -449,7 +449,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Icon(
               Icons.chevron_right,
-              color: HEGColors.gris.withOpacity(0.3),
+              color: HEGColors.gris.withValues(alpha: 0.3),
             ),
           ],
         ),
@@ -473,7 +473,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: HEGColors.violet.withOpacity(0.1),
+                color: HEGColors.violet.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: HEGColors.violet, size: 24),
@@ -493,7 +493,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Text(
                     value,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: HEGColors.gris.withOpacity(0.7),
+                          color: HEGColors.gris.withValues(alpha: 0.7),
                         ),
                   ),
                 ],
@@ -501,7 +501,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Icon(
               Icons.chevron_right,
-              color: HEGColors.gris.withOpacity(0.3),
+              color: HEGColors.gris.withValues(alpha: 0.3),
             ),
           ],
         ),
@@ -522,7 +522,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: HEGColors.violet.withOpacity(0.1),
+              color: HEGColors.violet.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: HEGColors.violet, size: 24),
@@ -542,7 +542,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Text(
                   value,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -556,7 +556,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+      child: Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
     );
   }
 }

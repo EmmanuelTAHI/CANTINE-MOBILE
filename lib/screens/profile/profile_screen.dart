@@ -183,7 +183,7 @@ class ProfileScreen extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: HEGColors.violet.withOpacity(0.4),
+                  color: HEGColors.violet.withValues(alpha: 0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -353,7 +353,7 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -372,7 +372,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
             ),
           ),
-          Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+          Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
           ...children,
         ],
       ),
@@ -392,7 +392,7 @@ class ProfileScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: HEGColors.violet.withOpacity(0.1),
+              color: HEGColors.violet.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: HEGColors.violet, size: 24),
@@ -405,7 +405,7 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: HEGColors.gris.withOpacity(0.7),
+                        color: HEGColors.gris.withValues(alpha: 0.7),
                       ),
                 ),
                 const SizedBox(height: 4),
@@ -426,7 +426,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+      child: Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
     );
   }
 
@@ -437,7 +437,7 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -451,7 +451,7 @@ class ProfileScreen extends StatelessWidget {
             title: 'Paramètres',
             onTap: () => context.push(AppRoutes.settings),
           ),
-          Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+          Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
           _buildActionTile(
             context,
             icon: Icons.help_outline,
@@ -462,7 +462,7 @@ class ProfileScreen extends StatelessWidget {
               );
             },
           ),
-          Divider(height: 1, color: HEGColors.gris.withOpacity(0.1)),
+          Divider(height: 1, color: HEGColors.gris.withValues(alpha: 0.1)),
           _buildActionTile(
             context,
             icon: Icons.info_outline,
@@ -513,7 +513,7 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: HEGColors.violet.withOpacity(0.1),
+                color: HEGColors.violet.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: HEGColors.violet, size: 24),
@@ -529,7 +529,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: HEGColors.gris.withOpacity(0.3),
+              color: HEGColors.gris.withValues(alpha: 0.3),
             ),
           ],
         ),

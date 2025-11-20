@@ -34,11 +34,25 @@ class User {
 
   /// Initiales pour l'avatar
   String get initials {
-    if (firstName != null && lastName != null) {
-      return '${firstName!.substring(0, 1)}${lastName!.substring(0, 1)}'
-          .toUpperCase();
+    try {
+      if (firstName != null && firstName!.isNotEmpty && lastName != null && lastName!.isNotEmpty) {
+        final a = firstName!.length >= 1 ? firstName!.substring(0, 1) : '';
+        final b = lastName!.length >= 1 ? lastName!.substring(0, 1) : '';
+        final result = (a + b).isNotEmpty ? (a + b) : username;
+        return result.toUpperCase();
+      }
+
+      if (username.isNotEmpty) {
+        return username.length >= 2 ? username.substring(0, 2).toUpperCase() : username.substring(0, 1).toUpperCase();
+      }
+    } catch (_) {
+      // Defensive fallback in case of unexpected string contents
+      if (username.isNotEmpty) {
+        return (username.length >= 1 ? username.substring(0, 1) : 'P').toUpperCase();
+      }
     }
-    return username.substring(0, 2).toUpperCase();
+
+    return '??';
   }
 
   /// Vérifie si l'utilisateur est admin

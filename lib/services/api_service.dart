@@ -41,6 +41,11 @@ class ApiService {
           // Gestion des erreurs
           if (error.response?.statusCode == 401) {
             // Token expiré ou invalide
+            try {
+              // Log response body to help debugging (do not leak tokens)
+              // ignore: avoid_print
+              print('[ApiService] 401 response data: ${error.response?.data}');
+            } catch (_) {}
             _token = null;
           }
           return handler.next(error);
@@ -52,11 +57,20 @@ class ApiService {
   /// Définit le token d'authentification
   void setToken(String token) {
     _token = token;
+    // Debug: indicate token presence (length only)
+    try {
+      // ignore: avoid_print
+      print('[ApiService] Token set (length: ${token.length})');
+    } catch (_) {}
   }
 
   /// Supprime le token
   void clearToken() {
     _token = null;
+    try {
+      // ignore: avoid_print
+      print('[ApiService] Token cleared');
+    } catch (_) {}
   }
 
   // ========== ÉLÈVES ==========
@@ -96,12 +110,47 @@ class ApiService {
   /// Enregistre une présence
   Future<Attendance> createAttendance(Attendance attendance) async {
     try {
+      // Prepare payload for creation: do not send the 'id' field
+      final payload = Map<String, dynamic>.from(attendance.toJson());
+      payload.remove('id');
+      // Ensure backend-required fields are present and non-null
+      if (payload['commentaire'] == null) {
+        payload['commentaire'] = '';
+      }
+      // Debug: log payload being sent
+      try {
+        // ignore: avoid_print
+        print('[ApiService] POST ${AppConstants.attendanceEndpoint} payload: $payload');
+      } catch (_) {}
+
       final response = await _dio.post(
         AppConstants.attendanceEndpoint,
-        data: attendance.toJson(),
+        data: payload,
       );
-      return Attendance.fromJson(response.data);
+      // Debug: log server response for successful create
+      try {
+        // ignore: avoid_print
+        print('[ApiService] createAttendance response: status=${response.statusCode} data=${response.data}');
+      } catch (_) {}
+
+      try {
+        return Attendance.fromJson(response.data);
+      } catch (e) {
+        // If parsing fails, log and throw a readable error
+        try {
+          // ignore: avoid_print
+          print('[ApiService] createAttendance parse error: $e');
+        } catch (_) {}
+        throw 'Erreur de parsing de la réponse createAttendance: ${e.toString()}';
+      }
     } catch (e) {
+      // If server returned a 400 with details, log it for debugging
+      if (e is DioException) {
+        try {
+          // ignore: avoid_print
+          print('[ApiService] createAttendance error response: ${e.response?.data}');
+        } catch (_) {}
+      }
       throw _handleError(e);
     }
   }
@@ -109,9 +158,13 @@ class ApiService {
   /// Met à jour une présence
   Future<Attendance> updateAttendance(int id, Attendance attendance) async {
     try {
+      final payload = Map<String, dynamic>.from(attendance.toJson());
+      if (payload['commentaire'] == null) {
+        payload['commentaire'] = '';
+      }
       final response = await _dio.put(
         '${AppConstants.attendanceEndpoint}$id/',
-        data: attendance.toJson(),
+        data: payload,
       );
       return Attendance.fromJson(response.data);
     } catch (e) {
@@ -191,6 +244,96 @@ class ApiService {
     } catch (e) {
       if ((e as DioException).response?.statusCode == 404) {
         return null;
+      }
+      throw _handleError(e);
+    }
+  }
+
+  /// Crée un menu journalier
+  Future<MenuJournalier> createMenuJournalier(Map<String, dynamic> payload) async {
+    try {
+      // Ensure date format (YYYY-MM-DD)
+      if (payload['date'] is DateTime) {
+        payload['date'] = (payload['date'] as DateTime).toIso8601String().split('T')[0];
+      }
+      try {
+        // ignore: avoid_print
+        print('[ApiService] createMenuJournalier payload: $payload');
+      } catch (_) {}
+      
+      final response = await _dio.post(
+        AppConstants.menusJournalierEndpoint,
+        data: payload,
+      );
+      try {
+        // ignore: avoid_print
+        print('[ApiService] createMenuJournalier response: status=${response.statusCode} data=${response.data}');
+      } catch (_) {}
+      return MenuJournalier.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      // Handle specific HTTP errors with detailed messages
+      if (e.response?.statusCode == 400) {
+        final errorData = e.response?.data as Map<String, dynamic>?;
+        try {
+          // ignore: avoid_print
+          print('[ApiService] 400 error data: $errorData');
+        } catch (_) {}
+        
+        // Check for date duplicate error
+        if (errorData?.containsKey('date') ?? false) {
+          final dateErrors = errorData!['date'];
+          final errorMsg = dateErrors is List ? dateErrors.first.toString() : dateErrors.toString();
+          throw Exception('Un menu existe déjà pour cette date. Veuillez choisir une autre date ou modifier le menu existant. Détail: $errorMsg');
+        }
+        
+        // Other 400 errors
+        throw Exception('Erreur de validation: ${errorData ?? e.message}');
+      } else if (e.response?.statusCode == 401) {
+        throw Exception('Session expirée. Veuillez vous reconnecter.');
+      } else if (e.response?.statusCode == 403) {
+        throw Exception('Vous n\'avez pas les droits pour cette action.');
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw Exception('Connexion au serveur trop lente. Vérifiez votre réseau.');
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        throw Exception('Le serveur met trop de temps à répondre.');
+      } else {
+        try {
+          // ignore: avoid_print
+          print('[ApiService] createMenuJournalier DioException: ${e.message}');
+        } catch (_) {}
+        throw Exception('Erreur: ${e.message}');
+      }
+    } catch (e) {
+      try {
+        // ignore: avoid_print
+        print('[ApiService] createMenuJournalier error: $e');
+      } catch (_) {}
+      rethrow;
+    }
+  }
+
+  /// Met à jour un menu journalier
+  Future<MenuJournalier> updateMenuJournalier(int id, Map<String, dynamic> payload) async {
+    try {
+      // Ensure date format (YYYY-MM-DD)
+      if (payload['date'] is DateTime) {
+        payload['date'] = (payload['date'] as DateTime).toIso8601String().split('T')[0];
+      }
+      final response = await _dio.put(
+        '${AppConstants.menusJournalierEndpoint}$id/',
+        data: payload,
+      );
+      try {
+        // ignore: avoid_print
+        print('[ApiService] updateMenuJournalier response: status=${response.statusCode} data=${response.data}');
+      } catch (_) {}
+      return MenuJournalier.fromJson(response.data as Map<String, dynamic>);
+    } catch (e) {
+      if (e is DioException) {
+        try {
+          // ignore: avoid_print
+          print('[ApiService] updateMenuJournalier error: ${e.response?.data}');
+        } catch (_) {}
       }
       throw _handleError(e);
     }

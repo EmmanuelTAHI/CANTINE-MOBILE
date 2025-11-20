@@ -23,6 +23,13 @@ class AttendanceProvider with ChangeNotifier {
 
     try {
       _todayAttendance = await _apiService.getTodayAttendance(repas: repas);
+      try {
+        // ignore: avoid_print
+        print('[AttendanceProvider] loadTodayAttendance: fetched ${_todayAttendance.length} records for repas=${repas?.apiValue ?? 'all'}');
+        // Print first ids for quick debug
+        // ignore: avoid_print
+        print('[AttendanceProvider] ids: ${_todayAttendance.take(5).map((a) => a.id).toList()}');
+      } catch (_) {}
       _error = null;
     } catch (e) {
       _error = e.toString();
@@ -41,6 +48,10 @@ class AttendanceProvider with ChangeNotifier {
 
     try {
       final created = await _apiService.createAttendance(attendance);
+      try {
+        // ignore: avoid_print
+        print('[AttendanceProvider] created attendance: ${created.id} student:${created.studentId} present:${created.present}');
+      } catch (_) {}
       // Mettre à jour la liste locale (vérifier par studentId ET repas)
       final index = _todayAttendance.indexWhere(
         (a) => a.studentId == attendance.studentId && a.repas == attendance.repas,

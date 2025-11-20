@@ -44,7 +44,11 @@ class AuthService {
 
       // Extraire le token et les données utilisateur
       final data = response.data as Map<String, dynamic>;
-      _token = data['access'] as String?;
+      // Try several common token keys returned by different backends
+      _token = data['access'] as String? ??
+          data['token'] as String? ??
+          data['key'] as String? ??
+          data['auth_token'] as String?;
       if (_token == null) {
         throw 'Token non reçu du serveur';
       }
