@@ -106,7 +106,6 @@ class Attendance {
   /// Conversion en JSON (pour l'API)
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'eleve': studentId, // Backend attend 'eleve'
       'date': date.toIso8601String().split('T')[0], // Format YYYY-MM-DD
       'repas': repas.apiValue,
@@ -159,5 +158,3 @@ class Attendance {
     );
   }
 }
-
-

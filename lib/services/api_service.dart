@@ -167,7 +167,7 @@ class ApiService {
       }
       return null;
     } catch (e) {
-      if ((e as DioException).response?.statusCode == 404) {
+      if (e is DioException && e.response?.statusCode == 404) {
         return null;
       }
       throw _handleError(e);
@@ -189,9 +189,71 @@ class ApiService {
       }
       return null;
     } catch (e) {
-      if ((e as DioException).response?.statusCode == 404) {
+      if (e is DioException && e.response?.statusCode == 404) {
         return null;
       }
+      throw _handleError(e);
+    }
+  }
+
+  /// Récupère une plage de menus journaliers
+  Future<List<MenuJournalier>> getMenusJournalier({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{};
+      if (startDate != null) {
+        queryParams['start_date'] = startDate.toIso8601String().split('T')[0];
+      }
+      if (endDate != null) {
+        queryParams['end_date'] = endDate.toIso8601String().split('T')[0];
+      }
+      final response = await _dio.get(
+        AppConstants.menusJournalierEndpoint,
+        queryParameters: queryParams.isEmpty ? null : queryParams,
+      );
+      final List<dynamic> data = response.data['results'] ?? response.data;
+      return data.map((json) => MenuJournalier.fromJson(json)).toList();
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// Crée un menu journalier
+  Future<MenuJournalier> createMenuJournalier(MenuJournalier menu) async {
+    try {
+      final response = await _dio.post(
+        AppConstants.menusJournalierEndpoint,
+        data: menu.toPayload(),
+      );
+      return MenuJournalier.fromJson(response.data);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// Met à jour un menu journalier
+  Future<MenuJournalier> updateMenuJournalier(
+    int id,
+    MenuJournalier menu,
+  ) async {
+    try {
+      final response = await _dio.put(
+        '${AppConstants.menusJournalierEndpoint}$id/',
+        data: menu.toPayload(),
+      );
+      return MenuJournalier.fromJson(response.data);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// Supprime un menu journalier
+  Future<void> deleteMenuJournalier(int id) async {
+    try {
+      await _dio.delete('${AppConstants.menusJournalierEndpoint}$id/');
+    } catch (e) {
       throw _handleError(e);
     }
   }

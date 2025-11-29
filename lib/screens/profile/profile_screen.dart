@@ -12,8 +12,16 @@ import '../../services/api_service.dart';
 import '../../routes/app_routes.dart';
 
 /// Écran de profil utilisateur
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  File? _localAvatarFile;
+  bool _isUploadingAvatar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -158,15 +166,67 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildAvatar(BuildContext context, User user) {
+    final localFile = _localAvatarFile;
     final avatarUrl = user.avatar != null && user.avatar!.isNotEmpty
         ? (user.avatar!.startsWith('http')
             ? user.avatar!
             : '${AppConstants.baseUrl.replaceAll('/api', '')}${user.avatar}')
         : null;
 
+    Widget avatarContent;
+    if (localFile != null) {
+      avatarContent = ClipOval(
+        child: Image.file(
+          localFile,
+          width: 120,
+          height: 120,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (avatarUrl != null) {
+      avatarContent = ClipOval(
+        child: CachedNetworkImage(
+          imageUrl: avatarUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Center(
+            child: Text(
+              user.initials,
+              style: const TextStyle(
+                color: HEGColors.white,
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) => Center(
+            child: Text(
+              user.initials,
+              style: const TextStyle(
+                color: HEGColors.white,
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      avatarContent = Center(
+        child: Text(
+          user.initials,
+          style: const TextStyle(
+            color: HEGColors.white,
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => _showImagePicker(context),
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Container(
             width: 120,
@@ -189,44 +249,27 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ],
             ),
-            child: avatarUrl != null
-                ? ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: avatarUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: Text(
-                          user.initials,
-                          style: const TextStyle(
-                            color: HEGColors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Center(
-                        child: Text(
-                          user.initials,
-                          style: const TextStyle(
-                            color: HEGColors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : Center(
-                    child: Text(
-                      user.initials,
-                      style: const TextStyle(
-                        color: HEGColors.white,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+            child: avatarContent,
           ),
+          if (_isUploadingAvatar)
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Center(
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(HEGColors.white),
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 0,
             right: 0,
@@ -286,6 +329,11 @@ class ProfileScreen extends StatelessWidget {
 
       if (pickedFile != null) {
         final file = File(pickedFile.path);
+        if (mounted) {
+          setState(() {
+            _localAvatarFile = file;
+          });
+        }
         await _uploadAvatar(context, file);
       }
     } catch (e) {
@@ -301,18 +349,20 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Future<void> _uploadAvatar(BuildContext context, File imageFile) async {
-    if (!context.mounted) return;
+    if (!mounted) return;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
+    setState(() {
+      _isUploadingAvatar = true;
+    });
 
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final apiService = ApiService();
       final avatarUrl = await apiService.uploadUserAvatar(imageFile);
+      final normalizedUrl = avatarUrl.startsWith('http')
+          ? avatarUrl
+          : '${AppConstants.baseUrl.replaceAll('/api', '')}$avatarUrl';
+      await CachedNetworkImage.evictFromCache(normalizedUrl);
 
       // Mettre à jour l'utilisateur dans le provider
       if (authProvider.user != null) {
@@ -320,8 +370,11 @@ class ProfileScreen extends StatelessWidget {
         await authProvider.updateUser(updatedUser);
       }
 
-      if (context.mounted) {
-        Navigator.pop(context); // Fermer le dialog de chargement
+      if (mounted) {
+        setState(() {
+          _isUploadingAvatar = false;
+          _localAvatarFile = null;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Photo de profil mise à jour avec succès'),
@@ -330,8 +383,10 @@ class ProfileScreen extends StatelessWidget {
         );
       }
     } catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context); // Fermer le dialog de chargement
+      if (mounted) {
+        setState(() {
+          _isUploadingAvatar = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erreur lors de l\'upload: ${e.toString()}'),

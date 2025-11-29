@@ -56,9 +56,8 @@ class MenuJournalier {
   }
 
   /// Conversion en JSON (pour l'API)
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+  Map<String, dynamic> toPayload({bool includeId = false}) {
+    final payload = <String, dynamic>{
       'date': date.toIso8601String().split('T')[0],
       'entree': entree,
       'plat_principal': platPrincipal,
@@ -67,6 +66,10 @@ class MenuJournalier {
       'boisson': boisson,
       'commentaires': commentaires,
     };
+    if (includeId) {
+      payload['id'] = id;
+    }
+    return payload;
   }
 
   /// Description complète du menu
@@ -80,6 +83,31 @@ class MenuJournalier {
     if (dessert != null && dessert!.isNotEmpty) parts.add('Dessert: $dessert');
     if (boisson != null && boisson!.isNotEmpty) parts.add('Boisson: $boisson');
     return parts.join(' • ');
+  }
+
+  /// Copie avec modifications
+  MenuJournalier copyWith({
+    int? id,
+    DateTime? date,
+    String? entree,
+    String? platPrincipal,
+    String? accompagnement,
+    String? dessert,
+    String? boisson,
+    String? commentaires,
+    String? photo,
+  }) {
+    return MenuJournalier(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      entree: entree ?? this.entree,
+      platPrincipal: platPrincipal ?? this.platPrincipal,
+      accompagnement: accompagnement ?? this.accompagnement,
+      dessert: dessert ?? this.dessert,
+      boisson: boisson ?? this.boisson,
+      commentaires: commentaires ?? this.commentaires,
+      photo: photo ?? this.photo,
+    );
   }
 }
 
